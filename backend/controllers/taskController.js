@@ -1,5 +1,5 @@
 const Task = require('../models/Task');
-const User = require('../models/User');
+
 // Create Task
 exports.createTask = async (req, res) => {
   const { title, description,dueDate,status} = req.body
@@ -15,7 +15,7 @@ exports.createTask = async (req, res) => {
 // Get Tasks
 exports.getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find(/* {user: req.user.id} */);
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -28,11 +28,9 @@ exports.updateTask = async (req, res) => {
   try{
     const {title,description,dueDate,status}=req.body;
     const id=req.params.id; 
-   /* let task = await Task.findById(req.params.id);
-   if (!task) return res.status(404).json({ msg: 'Task not found' });
-   if (task.user.toString() !== req.user.userId) return res.status(401).json({ msg: 'Not authorized' }); */
-
    const updateTodoDoc= await  Task.findByIdAndUpdate(
+       
+       /*  { _id: req.params.id, user: req.user.id }, */
         id,
         {title,description,dueDate,status},
         {new:true}
@@ -51,8 +49,9 @@ exports.updateTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
   try{
     const id=req.params.id;
-    const deletedoc=await Task.findByIdAndDelete(id);
-    res.status(204).end();
+    const deletedoc=await Task.findByIdAndDelete(/* {_id: req.params.id, user: req.user.id} */id);
+    res.status(204).json({ message: 'Task deleted' });
+    
     }
     catch(error){
         console.log(error);
