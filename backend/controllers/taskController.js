@@ -15,7 +15,7 @@ exports.createTask = async (req, res) => {
 // Get Tasks
 exports.getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find(/* {user: req.user.id} */);
+    const tasks = await Task.find();
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -29,8 +29,6 @@ exports.updateTask = async (req, res) => {
     const {title,description,dueDate,status}=req.body;
     const id=req.params.id; 
    const updateTodoDoc= await  Task.findByIdAndUpdate(
-       
-       /*  { _id: req.params.id, user: req.user.id }, */
         id,
         {title,description,dueDate,status},
         {new:true}
@@ -49,7 +47,7 @@ exports.updateTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
   try{
     const id=req.params.id;
-    const deletedoc=await Task.findByIdAndDelete(/* {_id: req.params.id, user: req.user.id} */id);
+    const deletedoc=await Task.findByIdAndDelete(id);
     res.status(204).json({ message: 'Task deleted' });
     
     }
